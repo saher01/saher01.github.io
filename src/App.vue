@@ -1,127 +1,106 @@
 
 <template>
   <div id="app">
-		<header>
-		<h1>Straker Translation Assignment</h1>
-		</header>
-		<main>
+    <header>
+      <h1>Straker Translation Assignment</h1>
+    </header>
 
-			<div class="flex">
-					
+    <main>
+      <div class="flex">
+        <nav>
+          <ul>
+            <div v-for="user, i in users">
+              <button class="btn" v-on:click="Showpost(user.id, i)">{{ user.name }}</button>
+            </div>
+          </ul>
+        </nav>
 
-				<nav>
-					<ul>
-						<div v-for="user, i in users">
-							<button class="btn" v-on:click="Showpost(user.id, i)" >{{ user.name }}</button>
-						</div>
-					</ul>
-				</nav>
-					<article>	
-						<v-app id="inspire">
-							<v-expansion-panels v-model="userpost">
-								
-							<v-expansion-panel v-for="post in filterposts" >
-								<v-expansion-panel-header><button class="btn">{{ post.title }}</button></v-expansion-panel-header>
-								<v-expansion-panel-content>
+        <article>
+          <v-app id="inspire">
+            <div class="search-wrapper" v-if="this.posts.length>0">
+              <input type="text" v-model="search" placeholder="Search title.." />
+            </div>
+            <v-expansion-panels v-model="userpost">
+              <v-expansion-panel v-for="post in filteredList">
+                <v-expansion-panel-header>
+                  <button class="btn">{{ post.title }}</button>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <div class="card">
+                    <div class="card-body">
+                      <div>
+                        <h1>{{ post.title }}</h1>
+                        <p>{{ post.body }}</p>
+                        <p>{{ post.id }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-app>
+        </article>
+      </div>
 
-								<div class="card">
-									<div class="card-body">
-									<div>
-										<h1 >{{ post.title }}</h1>
-										<p >{{ post.body }}</p>
-										<p >{{ post.id }}</p>
-									</div>
-									</div>
-								</div>
-								
-								</v-expansion-panel-content>
-							</v-expansion-panel>
-							</v-expansion-panels>
-						</v-app>	
-						
-					</article>
-			</div>
-
-				<footer>
-					<p>Footer</p>
-				</footer>
-
+      <footer>
+        <p>Footer</p>
+      </footer>
     </main>
   </div>
 </template>
 
 <script>
-	import axios from 'axios'
-	export default {
-		data(){
+import axios from "axios";
+export default {
+  data() {
+    return {
+      users: [],
+      posts: [],
+      userpost: "",
+      search: ""
+    };
+  },
 
-			return{
-			users: {},
-			posts: {},
-			postx: {},
-			filterposts: {},
-			post: '',
-			userpost: ''	
-			}
-			
-		},
-		
-		
-		mounted() {
-    		fetch("https://jsonplaceholder.typicode.com/users")
-      		.then(response => response.json())
-      		.then((data) => {
-        	this.users = data;
+  mounted() {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then(response => response.json())
+      .then(data => {
+        this.users = data;
+      });
+  },
 
-      		})
-		  },
-		  
-		  computed: {
-				filteredList() {
-				return this.filterposts.filter(post => {
-					return filterposts.title.toLowerCase().includes(this.search.toLowerCase())
-				})
-				}
-			},
-		
-		methods:{
-			Showpost(id, i) {
-				fetch("https://jsonplaceholder.typicode.com/posts?userId=" + id)
-				.then(response => response.json())
-				.then((data) => {
-				this.posts = data;
-				this.filterposts=this.posts;
-				this.postx = "";
-				this.userpost=[];
-				
-				})
-    		},
+  computed: {
+    filteredList() {
+      return this.posts.filter(post => {
+        return post.title.toLowerCase().includes(this.search.toLowerCase());
+      });
+    }
+  },
 
-			ShowPostContent(id){
-				// fetch("https://jsonplaceholder.typicode.com/posts?id=" + id)
-				// .then(response => response.json())
-				// .then((data) => {
-				// this.postx = data;
-				
-
-				// })
-				this.postx = this.posts[id].body;
-			},  
-		}
-	}
+  methods: {
+    Showpost(id, i) {
+      fetch("https://jsonplaceholder.typicode.com/posts?userId=" + id)
+        .then(response => response.json())
+        .then(data => {
+          this.posts = data;
+          this.userpost = [];
+        });
+    }
+  }
+};
 </script>
 
 <style lang="scss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  
 }
 
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 
@@ -139,14 +118,14 @@ a {
   color: #42b983;
 }
 
-.flex{
-display:flex;
-flex-wrap:wrap;
+.flex {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 /* Style the header */
 header {
-  background-color: #56C3E5;
+  background-color: #56c3e5;
   padding: 30px;
   text-align: center;
   font-size: 35px;
@@ -190,5 +169,46 @@ footer {
   padding: 10px;
   text-align: center;
   color: white;
+}
+
+.search-wrapper {
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+
+  label {
+    position: absolute;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.5);
+    top: 8px;
+    left: 12px;
+    z-index: -1;
+    transition: 0.15s all ease-in-out;
+  }
+  input {
+    padding: 4px 12px;
+    color: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    transition: 0.15s all ease-in-out;
+    background: white;
+    width: 300px;
+    &:focus {
+      outline: none;
+      transform: scale(1.05);
+      & + label {
+        font-size: 10px;
+        transform: translateY(-24px) translateX(-12px);
+      }
+    }
+    &::-webkit-input-placeholder {
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.5);
+      font-weight: 100;
+    }
+  }
 }
 </style>
