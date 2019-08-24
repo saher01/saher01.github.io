@@ -8,18 +8,42 @@
     <main>
       <div class="flex">
         <nav>
+          <div align="centre">
+            <b>Please Select a User</b>
+          </div>
           <ul>
             <div v-for="user, i in users">
-              <button class="btn" v-on:click="Showpost(user.id, i)">{{ user.name }}</button>
+              <button class="btn" v-on:click="Showpost(user, i)">{{ user.name }}</button>
             </div>
           </ul>
         </nav>
 
         <article>
           <v-app id="inspire">
-            <div class="search-wrapper" v-if="this.posts.length>0">
-              <input type="text" v-model="search" placeholder="Search Title" />
+            <div v-if="this.posts.length===0">
+              <b>About this application</b>
+              <p>
+                This is a vuejs app that fetches the list of users from the given
+                <a
+                  href="https://jsonplaceholder.typicode.com/users"
+                >url</a>. and displays them on the left panel of this page.
+                <br />As you click on a given user from the list, the posts associated with the users would be fetched from
+                <a
+                  href="https://jsonplaceholder.typicode.com/posts"
+                >here</a> and displayed here.
+                <br />Likewise, when a given post is selected, the post details would be displayed. There's also a search bar that lets you
+                <br />filter the posts. however, the search bar is made visible only after a user has been selected from the left panel.
+              </p>
             </div>
+
+            <div class="search-wrapper" v-if="this.posts.length>0">
+              <input type="text" v-model="search" placeholder="Search Post" />
+            </div>
+            <div v-if="this.posts.length>0">
+              <b>Posts by:</b>
+              {{currentUser.name}}
+            </div>
+
             <v-expansion-panels v-model="userpost">
               <v-expansion-panel v-for="post in filteredList">
                 <v-expansion-panel-header>
@@ -29,9 +53,18 @@
                   <div class="card">
                     <div class="card-body">
                       <div>
-                        <h1>{{ post.title }}</h1>
-                        <p>{{ post.body }}</p>
-                        <p>{{ post.id }}</p>
+                        <h3>
+                          <b>Title -</b>
+                          {{ post.title }}
+                        </h3>
+                        <p>
+                          <b>Body -</b>
+                          {{ post.body }}
+                        </p>
+                        <p>
+                          <b>Post id -</b>
+                          {{ post.id }}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -43,7 +76,7 @@
       </div>
 
       <footer>
-        <p>Footer</p>
+        <p>Author: Saher Ali</p>
       </footer>
     </main>
   </div>
@@ -56,7 +89,8 @@ export default {
       users: [],
       posts: [],
       userpost: "",
-      search: ""
+      search: "",
+      currentUser: ""
     };
   },
 
@@ -77,12 +111,13 @@ export default {
   },
 
   methods: {
-    Showpost(id, i) {
-      fetch("https://jsonplaceholder.typicode.com/posts?userId=" + id)
+    Showpost(user, i) {
+      fetch("https://jsonplaceholder.typicode.com/posts?userId=" + user.id)
         .then(response => response.json())
         .then(data => {
           this.posts = data;
           this.userpost = [];
+          this.currentUser = user;
         });
     }
   }
@@ -144,7 +179,7 @@ nav {
 /* Style the list inside the menu */
 nav ul {
   list-style-type: none;
-  text-align: left;
+  text-align: center;
   padding: 0;
 }
 
