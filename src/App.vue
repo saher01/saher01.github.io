@@ -18,7 +18,7 @@
         <article>
           <v-app id="inspire">
             <div class="search-wrapper" v-if="this.posts.length>0">
-              <input type="text" v-model="search" placeholder="Search title.." />
+              <input type="text" v-model="search" placeholder="Search Title" />
             </div>
             <v-expansion-panels v-model="userpost">
               <v-expansion-panel v-for="post in filteredList">
