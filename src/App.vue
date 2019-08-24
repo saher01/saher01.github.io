@@ -57,7 +57,7 @@ export default {
       users: [],
       posts: [],
       userpost: "",
-      search: "na"
+      search: ""
     };
   },
 
